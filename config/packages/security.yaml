@@ -1,4 +1,7 @@
 security:
+    encoders:
+         App\Entity\Utilisateur:
+            algorithm: bcrypt
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
@@ -6,13 +9,22 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
+        app_user_provider:
+         entity:
+             class: App\Entity\Utilisateur
+             property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+
+            json_login:
+                check_path: api_login
+            logout: 
+                path: 'api_logout'
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
